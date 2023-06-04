@@ -3,7 +3,7 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 
-from download_process_data import data
+from load_data import data
 
 # Download the necessary resources for NLTK
 nltk.download('punkt')
@@ -35,3 +35,4 @@ for doc in data:
 
 preprocessed_training_data = [(doc['text'], doc['class']) for doc in data if doc['split'] == 'TRAIN']
 preprocessed_testing_data = [(doc['text'], doc['class']) for doc in data if doc['split'] == 'TEST']
+
