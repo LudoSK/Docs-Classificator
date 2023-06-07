@@ -35,9 +35,9 @@ w2v = Word2Vec(documents, min_count=1)
 w2v.train(documents, total_examples=w2v.corpus_count, epochs=w2v.epochs)
 
 
-def document_vector(document):
-    vector_sum = sum(abs(w2v.wv[word]) for word in document if word in w2v.wv.key_to_index)
+def document_vector(w2vec,document):
+    vector_sum = sum(abs(w2vec.wv[word]) for word in document if word in w2vec.wv.key_to_index)
     return vector_sum / len(document) if vector_sum is not None else np.zeros(100)
 
 
-w2v_vectors = [document_vector(document) for document in documents]
+w2v_vectors = [document_vector(w2v,document) for document in documents]

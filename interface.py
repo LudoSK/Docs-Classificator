@@ -1,10 +1,15 @@
 import tkinter as tk
 from tkinter import messagebox
 import pickle
+from algo_vectorisation import document_vector
+from text_preprocessing import preprocess_text
+from scipy.sparse import csr_matrix
+from algo_classification import Model
 
-def load_model(vectorizer_name, classifier_name):
-    model_name = vectorizer_name + '-' + classifier_name + '.pkl'
-    with open(model_name, 'rb') as file:
+
+
+def load_model(model_name):
+    with open('models/'+model_name+ '.pkl', 'rb') as file:
         model = pickle.load(file)
     return model
 
@@ -16,20 +21,30 @@ def start_classification():
 
     # Obtenir le texte saisi
     input_text = text_entry.get("1.0", tk.END).strip()
+    print(len(input_text))
+    if not selected_model or not input_text:
+        tk.messagebox.showerror("Classification de texte","Model or input text is empty")
+        return
+    input_text = preprocess_text(input_text)
+    input_text = ' '.join(input_text)
+
+
+
+    vectorizer_name = selected_model.split("-")[0]
+    model = load_model(selected_model)
 
     # Effectuer la classification et afficher le résultat
-    if selected_model == "Model 1":
-        result_label.config(text="Résultat : Modèle 1 - " + input_text)
-    elif selected_model == "Model 2":
-        result_label.config(text="Résultat : Modèle 2 - " + input_text)
-    elif selected_model == "Model 3":
-        result_label.config(text="Résultat : Modèle 3 - " + input_text)
-    elif selected_model == "Model 4":
-        result_label.config(text="Résultat : Modèle 4 - " + input_text)
-    elif selected_model == "Model 5":
-        result_label.config(text="Résultat : Modèle 5 - " + input_text)
-    elif selected_model == "Model 6":
-        result_label.config(text="Résultat : Modèle 6 - " + input_text)
+    if vectorizer_name == "w2v":
+        model.vectorizer.train([input_text], total_examples=model.vectorizer.corpus_count, epochs=model.vectorizer.epochs)
+        input_vectors = document_vector(model.vectorizer,input_text)
+        input_vectors = csr_matrix(input_vectors)
+    else:
+        input_vectors = model.vectorizer.transform([input_text])
+
+    result = model.classifier.predict(input_vectors)
+
+    print(result)
+    result_label.configure(text=f"Result : {result[0]}")
 
 
 # Création de la fenêtre principale
@@ -37,7 +52,8 @@ window = tk.Tk()
 window.title("Classification de texte")
 
 # Liste des modèles disponibles
-models = ["Model 1", "Model 2", "Model 3", "Model 4", "Model 5", "Model 6"]
+models = ["BoW-MinDistance", "tfidf-MinDistance", "w2v-MinDistance", "BoW-Naive", "tfidf-Naive",
+          "BoW-Logistic", "tfidf-Logistic", "w2v-Logistic"]
 
 # Création du label "Select Model"
 select_model_label = tk.Label(window, text="Select Model")
