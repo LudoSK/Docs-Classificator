@@ -4,10 +4,10 @@ from bs4 import BeautifulSoup
 data = []
 
 # For each file
-for file in os.listdir('reuters_test'):
+for file in os.listdir('reuters21578'):
     if file.endswith(".sgm"):
         try:
-            with open(os.path.join('reuters_test', file), 'r', encoding='utf-8') as f:
+            with open(os.path.join('reuters21578', file), 'r', encoding='utf-8') as f:
                 content = f.read()
         except:
             continue
