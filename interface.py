@@ -14,16 +14,16 @@ def load_model(model_name):
     return model
 
 
-# Fonction pour gérer le bouton "Start"
+# Function to manage the "Start" button
 def start_classification():
-    # Obtenir le modèle sélectionné
+    # Get selected model
     selected_model = model_var.get()
 
-    # Obtenir le texte saisi
+    # Get typed text
     input_text = text_entry.get("1.0", tk.END).strip()
     print(len(input_text))
     if not selected_model or not input_text:
-        tk.messagebox.showerror("Classification de texte","Model or input text is empty")
+        tk.messagebox.showerror("Text Classification","Model or input text is empty")
         return
     input_text = preprocess_text(input_text)
     input_text = ' '.join(input_text)
@@ -33,7 +33,7 @@ def start_classification():
     vectorizer_name = selected_model.split("-")[0]
     model = load_model(selected_model)
 
-    # Effectuer la classification et afficher le résultat
+    # Perform the classification and display the result
     if vectorizer_name == "w2v":
         model.vectorizer.train([input_text], total_examples=model.vectorizer.corpus_count, epochs=model.vectorizer.epochs)
         input_vectors = document_vector(model.vectorizer,input_text)
@@ -47,37 +47,37 @@ def start_classification():
     result_label.configure(text=f"Result : {result[0]}")
 
 
-# Création de la fenêtre principale
+# Creation of the main window
 window = tk.Tk()
 window.title("Classification de texte")
 
-# Liste des modèles disponibles
+# List of available models
 models = ["BoW-MinDistance", "tfidf-MinDistance", "w2v-MinDistance", "BoW-Naive", "tfidf-Naive",
           "BoW-Logistic", "tfidf-Logistic", "w2v-Logistic"]
 
-# Création du label "Select Model"
+# Creation of the "Select Model" label
 select_model_label = tk.Label(window, text="Select Model")
 select_model_label.pack()
 
-# Création du sélecteur de modèle
+# Creating the model selector
 model_var = tk.StringVar()
-model_var.set(models[0])  # Sélection par défaut
+model_var.set(models[0])  # Default selection
 model_selector = tk.OptionMenu(window, model_var, *models)
 model_selector.pack()
 
-# Création de la zone de texte pour saisir le texte
+# Creating the text box to enter the text
 text_entry_label = tk.Label(window, text="Enter Text")
 text_entry_label.pack()
 text_entry = tk.Text(window, height=5, width=30)
 text_entry.pack()
 
-# Création du label "Résultat"
+# Creation of the "Result" label
 result_label = tk.Label(window, text="Résultat :")
 result_label.pack()
 
-# Création du bouton "Start"
+# Creation of the "Start" button
 start_button = tk.Button(window, text="Start", command=start_classification)
 start_button.pack()
 
-# Lancement de la boucle principale de l'interface
+# Launching the main loop of the interface
 window.mainloop()

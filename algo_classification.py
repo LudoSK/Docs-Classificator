@@ -46,7 +46,7 @@ def save_model(vectorizer, classifier, vectorizer_name, classifier_name):
     model_name = vectorizer_name + '-' + classifier_name + '.pkl'
     with open('models/' + model_name, 'wb') as file:
         pickle.dump(model, file)
-    print("Modèle sauvegardé avec succès dans le fichier :", model_name)
+    print("Model successfully saved to file :", model_name)
 
 
 def train_and_save_model(vectorizer, classifier, vectorizer_name, classifier_name):
@@ -107,7 +107,7 @@ if not os.path.exists('models/tfidf-Naive.pkl'):
                     Accuracy : {accuracy * 100}%""")
 
 # case 6 w2v & Naive
-#ça ne marche pas car les nombres issues de w2v sont négatifs
+#it doesn't work because the numbers from w2v are negative
 
 # case 7 bow & Logistic Regression
 if not os.path.exists('models/BoW-Logistic.pkl'):
